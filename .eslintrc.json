@@ -7,7 +7,7 @@
     "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-      "project": "./tsconfig.json",
+      "project": "./tsconfig-base.json",
       "sourceType": "module"
     },
     "rules": {
@@ -15,6 +15,7 @@
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
       "import/no-default-export": "error",
+      "import/no-extraneous-dependencies": "error",
       "simple-import-sort/sort": [
         "error",
         {
@@ -35,7 +36,7 @@
         }
       ],
       "func-style": ["error", "declaration"],
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-use-before-define": "off",
       "@typescript-eslint/no-useless-constructor": "error",
       "accessor-pairs": "error",

@@ -31,7 +31,7 @@ export function call<D, R, CC extends ContextConnected>(
   { call, prepareArgs, postprocess }: CallDef<D, R, CC>,
 ): (args: D) => Observable<R> {
   return (args: D) => {
-    return from(
+    return from<R>(
       call(
         args,
         context,

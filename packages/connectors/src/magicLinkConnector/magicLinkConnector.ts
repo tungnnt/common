@@ -3,7 +3,7 @@ import { ConnectorUpdate } from '@web3-react/types';
 import { noop } from 'lodash';
 import { Magic, MagicUserMetadata, RPCError, RPCErrorCode } from 'magic-sdk';
 
-import { NetworkName } from '../../types';
+import { NetworkName } from '../types';
 
 interface MagicLinkArguments {
   apiKey: string;

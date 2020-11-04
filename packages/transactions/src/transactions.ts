@@ -46,7 +46,7 @@ interface CommonContext {
 }
 
 export type TxMeta = {
-  kind: string;
+  kind: any;
   [key: string]: string | number | BigNumber | undefined;
 };
 
@@ -85,13 +85,13 @@ export type TxState<A extends TxMeta> = {
     }
   | {
       status: TxStatus.CancelledByTheUser;
-      error: Error;
+      error: any;
     }
   | {
       status: TxStatus.Success;
       txHash: string;
       blockNumber: number;
-      receipt: TransactionReceiptLike;
+      receipt: any;
       confirmations: number;
       safeConfirmations: number;
       rebroadcast?: TxRebroadcastStatus;
@@ -100,12 +100,12 @@ export type TxState<A extends TxMeta> = {
       status: TxStatus.Failure;
       txHash: string;
       blockNumber: number;
-      receipt: TransactionReceiptLike;
+      receipt: any;
     }
   | {
       status: TxStatus.Error;
       txHash: string;
-      error: Error;
+      error: any;
     }
 );
 
@@ -139,7 +139,7 @@ export function getTxHash<A extends TxMeta>(state: TxState<A>): string | undefin
   return undefined;
 }
 
-type NodeCallback<I, R> = (i: I, callback: (err: Error, r: R) => void) => void;
+type NodeCallback<I, R> = (i: I, callback: (err: any, r: R) => any) => any;
 
 interface TransactionReceiptLike {
   transactionHash: string;
@@ -294,7 +294,7 @@ function monitorTransaction<A extends TxMeta>(
           ),
         ),
         takeWhileInclusive(
-          (state) =>
+          (state: TxState<A>) =>
             !isDone(state) ||
             (state.status === TxStatus.Success && state.confirmations < state.safeConfirmations),
         ),
@@ -332,7 +332,7 @@ function send<A extends TxMeta>(
   account: string,
   networkId: string,
   meta: A,
-  method: (...args: unknown[]) => any, // Any contract method
+  method: (...args: any[]) => any, // Any contract method
 ): Observable<TxState<A>> {
   const common = {
     account,
@@ -349,7 +349,7 @@ function send<A extends TxMeta>(
     first(),
     switchMap(({ web3 }) =>
       merge(fromEvent(promiEvent, 'transactionHash'), promiEvent).pipe(
-        map((txHash: string) => [txHash, new Date()]),
+        map((txHash: string) => [txHash, new Date()] as [string, Date]),
         first(),
         mergeMap(([txHash, broadcastedAt]: [string, Date]) =>
           monitorTransaction(
@@ -458,10 +458,10 @@ function createTransactions$<A extends TxMeta>(
     map(([txs, account, context]) =>
       txs.filter((t: TxState<A>) => t.account === account && t.networkId === context.id),
     ),
-    startWith([]),
+    startWith([] as TxState<A>[]),
     shareReplay(1),
   );
-  function change(ch: TransactionsChange<A>): void {
+  function change(ch: TransactionsChange<A>) {
     transactionObserver.next(ch);
   }
 
@@ -473,7 +473,7 @@ function sendCurried<A extends TxMeta>(
   context$: Observable<CommonContext>,
   change: (change: NewTransactionChange<A>) => void,
 ) {
-  return (account: string, networkId: string, meta: A, method: (...args: unknown[]) => unknown) =>
+  return (account: string, networkId: string, meta: A, method: (...args: any[]) => any) =>
     send<A>(onEveryBlock$, context$, change, account, networkId, meta, method);
 }
 
@@ -481,10 +481,10 @@ export type SendFunction<A extends TxMeta> = (
   account: string,
   networkId: string,
   meta: A,
-  method: (...args: unknown[]) => unknown,
+  method: (...args: any[]) => any,
 ) => Observable<TxState<A>>;
 
-function saveTransactions<A extends TxMeta>(transactions: TxState<A>[]): void {
+function saveTransactions<A extends TxMeta>(transactions: TxState<A>[]) {
   if (transactions.length) {
     localStorage.setItem(
       'transactions',
@@ -498,15 +498,11 @@ function saveTransactions<A extends TxMeta>(transactions: TxState<A>[]): void {
   }
 }
 
-interface TypedValue {
-  _type: string;
-  _data: BigNumber;
-}
-
-// Default BigNumber `toJSON` method returns a string, but we want it to return an object
+// By default - toJSON method returns a string and we override it with our implementation that
+// returns other type so we need to ignore the error
 // eslint-disable-next-line
 // @ts-ignore
-BigNumber.prototype.toJSON = function toJSON(): TypedValue {
+BigNumber.prototype.toJSON = function toJSON() {
   return {
     _type: 'BigNumber',
     _data: Object.assign({}, this),
@@ -514,17 +510,16 @@ BigNumber.prototype.toJSON = function toJSON(): TypedValue {
 };
 
 function conformTransactions<A extends TxMeta>(serializedTransactions: string): TxState<A>[] {
-  function reviveFromJSON(_key: string, value: unknown) {
+  function reviveFromJSON(_key: string, value: any) {
     let result = value;
     const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
     if (typeof value === 'object' && value !== null && value.hasOwnProperty('_type')) {
-      const typedValue = value as TypedValue;
-      switch (typedValue._type) {
+      switch (value._type) {
         case 'BigNumber':
-          result = Object.assign(new BigNumber(0), typedValue._data);
+          result = Object.assign(new BigNumber(0), value._data);
       }
     }
-    if (typeof value === 'string' && reISO.exec(value)) result = new Date(value);
+    if (reISO.exec(value)) result = new Date(value);
     return result;
   }
 
@@ -607,5 +602,5 @@ export function createSend<A extends TxMeta>(
 
   const zend = sendCurried<A>(onEveryBlock$, context$, change);
 
-  return [zend, transactions$, (txNo: number): void => change({ kind: 'dismissed', txNo })];
+  return [zend, transactions$, (txNo: number) => change({ kind: 'dismissed', txNo })];
 }

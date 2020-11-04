@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "outDir": "lib",
+      "module": "esnext",
+      "target": "es2017",
+      "lib": ["dom", "es2018", "esnext"],
+      "sourceMap": true,
+      "moduleResolution": "node",
+      "forceConsistentCasingInFileNames": true,
+      "strict": true,
+      "noImplicitReturns": true,
+      "skipLibCheck": true,
+      "noEmit": false,
+      "jsx": "preserve",
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "declaration": true,
+      "declarationMap": true,
+      "composite": true
+    },
+    "exclude": ["node_modules", "lib"],
+  }
+  

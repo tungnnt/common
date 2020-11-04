@@ -1,0 +1,41 @@
+{
+  "name": "@oasis/connectors",
+  "version": "0.0.0",
+  "description": "Web3-react connectors for Ledger, trezor and magic link",
+  "homepage": "https://github.com/OasisDEX/common#readme",
+  "main": "lib/src/index.js",
+  "typings": "lib/src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OasisDEX/common.git"
+  },
+  "scripts": {
+  },
+  "bugs": {
+    "url": "https://github.com/OasisDEX/common/issues"
+  },
+  "devDependencies": {
+    "@types/ledgerhq__hw-transport-u2f": "^4.21.2",
+    "@types/lodash": "^4.14.164",
+    "@types/web3-provider-engine": "^14.0.0"
+  },
+  "dependencies": {
+    "@0x/assert": "^3.0.17",
+    "@0x/subproviders": "^6.1.9",
+    "@0x/utils": "^6.1.0",
+    "@ledgerhq/hw-app-eth": "^5.27.1",
+    "@ledgerhq/hw-transport-u2f": "^5.28.0",
+    "@web3-react/abstract-connector": "^6.0.7",
+    "@web3-react/types": "^6.0.7",
+    "ethereumjs-tx": "^2.1.2",
+    "ethereumjs-util": "^7.0.7",
+    "ethjs-util": "^0.1.6",
+    "hdkey": "^2.0.1",
+    "lodash": "^4.17.20",
+    "magic-sdk": "^3.0.1",
+    "semaphore-async-await": "^1.5.1",
+    "trezor-connect": "^8.1.17-extended",
+    "ts-essentials": "^7.0.1",
+    "web3-provider-engine": "^14.0.1"
+  }
+}
