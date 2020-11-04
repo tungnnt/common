@@ -7,29 +7,26 @@ A monorepo where we put the packages that are shared between different oasis app
 - [@oasis/connectors](packages/connectors) - web3-react connectors for Ledger, trezor and magic link
 - [@oasis/transactions](packages/transactions) - Utilities for sending and monitoring transactions
 
-## Building
+## How to start developing
 
-`yarn build`
-
-Will build all the packages in the correct order
-
-```yarn watch```
-
-Will continuosly build all the packages in watch mode
-
-```yarn lint```
-
-Linting
+- Clone the repo
+- Run `yarn`
+- Run `yarn build` or `yarn watch`
+- You can also run the linter by running `yarn lint`
 
 ## Adding a new package
 
-* Copy an existing small package
-* Remove the code and add new code
-* Adjust `README`, `package.json` and other files
-* Append the new package to the top level `tsconfig.json` so that it gets built
-* Adjust project references for dependants
-* Add dependies from this repo as project references in the `tsconfig.json`
+- Copy an existing small package
+- Remove the code and add new code
+- Adjust `README`, `package.json` and other files
+- Append the new package to the top level `tsconfig.json` so that it gets built
+- Adjust project references for dependants
+- Add dependies from this repo as project references in the `tsconfig.json`
 
 ## Publishing
 
-You need to be a member of @oasis npmjs org.
+- You need to be a member of `@oasisdex` npmjs org.
+- Login into npm by running `npm login`
+- Run `yarn run:publish`. It will build the project and run `lerna publish`
+- Lerna will publish the packages that have changed and ask you for new versions (patch, minor,
+  major)
