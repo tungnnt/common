@@ -15,6 +15,7 @@
     "eslint-plugin-unused-imports": "^1.0.0",
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
     "typescript": "^4.0.5"
   },
   "scripts": {
@@ -22,8 +23,11 @@
     "watch": "tsc -b -w",
     "lint": "eslint packages --ext .ts",
     "lint:fix": "eslint packages --ext .ts --fix",
-    "link": "lerna exec yarn link",
-    "unlink": "lerna exec yarn unlink",
+    "link": "lerna run link",
+    "test": "lerna run test",
+    "unlink": "lerna run unlink",
+    "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
+    "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
     "lerna": "lerna",
     "lerna:publish": "lerna publish",
     "run:publish": "run-s build lerna:publish"
