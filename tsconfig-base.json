@@ -2,7 +2,7 @@
     "compilerOptions": {
       "allowSyntheticDefaultImports": true,
       "outDir": "lib",
-      "module": "esnext",
+      "module": "commonjs",
       "target": "es2017",
       "lib": ["dom", "es2018", "esnext"],
       "sourceMap": true,
