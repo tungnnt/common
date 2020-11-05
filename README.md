@@ -12,6 +12,9 @@ A monorepo where we put the packages that are shared between different oasis app
 - Clone the repo
 - Run `yarn`
 - Run `yarn build` or `yarn watch`
+- If you want to try using new versions before publishing (which you should) - you can use
+  `yarn link` and `yarn unlink` commands which will link all the packages and make them available to
+  use by running `yarn link @oasisdex/${name}` in other projects
 - You can also run the linter by running `yarn lint`
 
 ## Adding a new package
