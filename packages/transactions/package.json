@@ -9,7 +9,10 @@
     "type": "git",
     "url": "git+https://github.com/OasisDEX/common.git"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b -w"
+  },
   "bugs": {
     "url": "https://github.com/OasisDEX/common/issues"
   },
@@ -20,6 +23,6 @@
     "ramda": "^0.25.0",
     "rxjs": "~6.2.2",
     "rxjs-take-while-inclusive": "^2.1.0",
-    "web3": "^1.2.4"
+    "web3": "^1.2.6"
   }
 }

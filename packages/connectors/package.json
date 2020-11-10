@@ -9,7 +9,10 @@
     "type": "git",
     "url": "git+https://github.com/OasisDEX/common.git"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b -w"
+  },
   "bugs": {
     "url": "https://github.com/OasisDEX/common/issues"
   },
