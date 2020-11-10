@@ -1,0 +1,39 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint": "^7.12.1",
+    "eslint-config-typestrict": "^1.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-no-only-tests": "^2.4.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-simple-import-sort": "^5.0.3",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "eslint-plugin-unused-imports": "^1.0.0",
+    "lerna": "^3.22.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.5"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b -w",
+    "lint": "eslint packages --ext .ts",
+    "lint:fix": "eslint packages --ext .ts --fix",
+    "link:all": "lerna run link",
+    "unlink:all": "lerna run unlink",
+    "test": "lerna run test",
+    "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
+    "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
+    "lerna": "lerna",
+    "lerna:publish": "lerna publish",
+    "run:publish": "run-s build lerna:publish"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {}
+}
