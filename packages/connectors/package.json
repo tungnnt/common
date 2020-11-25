@@ -9,6 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/OasisDEX/common.git"
   },
+  "license": "Apache-2.0",
   "scripts": {},
   "bugs": {
     "url": "https://github.com/OasisDEX/common/issues"
