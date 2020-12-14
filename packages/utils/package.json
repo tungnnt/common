@@ -1,6 +1,6 @@
 {
   "name": "@oasisdex/utils",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Utils",
   "homepage": "https://github.com/OasisDEX/common#readme",
   "main": "lib/src/index.js",
