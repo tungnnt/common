@@ -25,5 +25,6 @@
     "rxjs": "~6.2.2",
     "rxjs-take-while-inclusive": "^2.1.0",
     "web3": "^1.2.6"
-  }
+  },
+  "gitHead": "0423d3d02ebfc45bf73092227a118bf9409f4696"
 }

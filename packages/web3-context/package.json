@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@oasisdex/connectors": "^0.0.15",
-    "@oasisdex/utils": "^0.0.2",
+    "@oasisdex/utils": "^0.0.4",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
     "@web3-react/injected-connector": "^6.0.7",
