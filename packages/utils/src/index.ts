@@ -1,1 +1,1 @@
-export { amountFromWei } from './utils';
+export { amountFromWei, amountToWei, nullAddress } from './utils';
