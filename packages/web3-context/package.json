@@ -1,6 +1,6 @@
 {
   "name": "@oasisdex/web3-context",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Web3 Context",
   "homepage": "https://github.com/OasisDEX/common#readme",
   "main": "lib/src/index.js",
@@ -37,5 +37,5 @@
     "web3": "^1.2.6",
     "web3-eth": "1.2.6"
   },
-  "gitHead": "c08a327e3cb43a4f8139f59fca2714f2f2d445f7"
+  "gitHead": "0423d3d02ebfc45bf73092227a118bf9409f4696"
 }
