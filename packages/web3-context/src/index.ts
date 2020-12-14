@@ -11,6 +11,5 @@ export type {
   Web3ContextError,
   Web3ContextNotConnected,
 } from './types';
-export { amountFromWei, amountToWei, nullAddress } from './utils';
 export { createWeb3Context$, fetchAccountBalances } from './web3_context';
 export type { BalanceOfMethod } from './web3_context';

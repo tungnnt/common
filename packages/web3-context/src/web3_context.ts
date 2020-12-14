@@ -1,3 +1,4 @@
+import { amountFromWei } from '@oasisdex/utils';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import { NetworkConnector } from '@web3-react/network-connector';
@@ -8,11 +9,9 @@ import { useEffect, useState } from 'react';
 import { Observable, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import Web3 from 'web3';
-
 import { LedgerConnector } from '../../connectors/lib/src';
 import { contract, ContractDesc, getNetworkId } from './network';
 import { AccountWithBalances, ConnectionKind, Web3Context } from './types';
-import { amountFromWei } from './utils';
 
 export type BalanceOfMethod = (address: string) => { call: () => Promise<string> };
 export type BalanceOfCreator = (web3: Web3, chainId: number) => BalanceOfMethod;
