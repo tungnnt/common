@@ -1,6 +1,6 @@
 {
   "name": "@oasisdex/utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Utils",
   "homepage": "https://github.com/OasisDEX/common#readme",
   "main": "lib/src/index.js",
@@ -16,7 +16,6 @@
   "bugs": {
     "url": "https://github.com/OasisDEX/common/issues"
   },
-  "devDependencies": {},
   "dependencies": {
     "bignumber.js": "^7.2.1"
   }
