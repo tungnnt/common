@@ -1,11 +1,9 @@
 {
-    "extends": "../../tsconfig-base",
-    "compilerOptions": {
-        "outDir": "lib",
-        "rootDir": "."
-    },
-    "include": ["./src/**/*"],
-    "references": [
-        { "path": "../connectors" }
-    ]
+  "extends": "../../tsconfig-base",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "."
+  },
+  "include": ["./src/**/*"],
+  "references": [{ "path": "../connectors" }, { "path": "../utils" }]
 }
