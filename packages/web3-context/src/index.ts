@@ -1,16 +1,16 @@
-export { fetchAccountBalances, createWeb3Context$ } from './web3_context';
-export type { BalanceOfMethod } from './web3_context';
+export { contract, getNetworkId, getNetworkName } from './network';
+export type { ContractDesc } from './network';
 export type {
-  Web3Context,
-  ConnectionKind,
   AccountWithBalances,
-  Web3ContextConnecting,
-  Web3ContextConnectingHWSelectAccount,
+  ConnectionKind,
+  Web3Context,
   Web3ContextConnected,
   Web3ContextConnectedReadonly,
+  Web3ContextConnecting,
+  Web3ContextConnectingHWSelectAccount,
   Web3ContextError,
   Web3ContextNotConnected,
 } from './types';
-export type { ContractDesc } from './network';
-export { contract, getNetworkId, getNetworkName } from './network';
 export { amountFromWei, amountToWei, nullAddress } from './utils';
+export { createWeb3Context$, fetchAccountBalances } from './web3_context';
+export type { BalanceOfMethod } from './web3_context';

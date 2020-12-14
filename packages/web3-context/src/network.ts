@@ -12,7 +12,6 @@ export interface ContractDesc {
 }
 
 const web3s: Web3[] = [];
-// TODO
 export const contract: any = memoize(
   (web3: Web3, { abi, address }: ContractDesc) => new web3.eth.Contract(abi.default, address),
   (web3: Web3, { address }: ContractDesc) => {
