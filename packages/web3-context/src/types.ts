@@ -60,6 +60,7 @@ export interface Web3ContextConnected {
 export interface Web3ContextError extends Connectable {
   status: 'error';
   error: Error;
+  deactivate: () => void;
 }
 
 export type Web3Context =

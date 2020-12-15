@@ -109,6 +109,7 @@ export function createWeb3Context$(
           error,
           connect,
           connectLedger,
+          deactivate,
         });
         return;
       }
