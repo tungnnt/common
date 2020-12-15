@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { Observable, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import Web3 from 'web3';
-import { LedgerConnector } from '../../connectors/lib/src';
+import { LedgerConnector } from '@oasisdex/connectors';
 import { contract, ContractDesc, getNetworkId } from './network';
 import { AccountWithBalances, ConnectionKind, Web3Context } from './types';
 
@@ -64,18 +64,15 @@ export function createWeb3Context$(
       await activate(connector);
     }
 
-    async function connectLedger(_chainId: number, _baseDerivationPath: string) {
-      throw new Error('Not implemented yet!');
-      // const connector = new LedgerConnector({
-      //   baseDerivationPath,
-      //   chainId,
-      //   url: networks[chainId].infuraUrl,
-      //   pollingInterval: pollingInterval,
-      // })
-      // setActivatingConnector(connector)
-      // setConnectionKind('ledger')
-      // setHWAccount(undefined)
-      // await activate(connector)
+    async function connectLedger(chainId: number, baseDerivationPath: string) {
+      console.log('CONNECT LEDGER');
+      const connector = new LedgerConnector({
+        baseDerivationPath,
+        chainId,
+        url: chainIdToRpcUrl[chainId],
+        pollingInterval: 1000,
+      });
+      await connect(connector, 'ledger');
     }
 
     useEffect(() => {
