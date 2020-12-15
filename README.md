@@ -53,6 +53,8 @@ happen:
 If you want to read more about `yalc` see
 (here)[https://www.viget.com/articles/how-to-use-local-unpublished-node-packages-as-project-dependencies/].
 
+When you're done - run `yalc remove` or `yalc remove --all` in a dependee.
+
 ## Adding a new package
 
 - Copy an existing small package
