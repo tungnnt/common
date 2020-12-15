@@ -60,6 +60,7 @@ export function createWeb3Context$(
     async function connect(connector: AbstractConnector, connectionKind: ConnectionKind) {
       setActivatingConnector(connector);
       setConnectionKind(connectionKind);
+      setHWAccount(undefined);
       await activate(connector);
     }
 
