@@ -65,7 +65,6 @@ export function createWeb3Context$(
     }
 
     async function connectLedger(chainId: number, baseDerivationPath: string) {
-      console.log('CONNECT LEDGER');
       const connector = new LedgerConnector({
         baseDerivationPath,
         chainId,
