@@ -1,9 +1,10 @@
 {
-    "files": [],
-    "include": [],
-    "references": [
-      { "path": "./packages/connectors" },
-      { "path": "./packages/transactions" },
-    ]
-  }
-  
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./packages/connectors" },
+    { "path": "./packages/transactions" },
+    { "path": "./packages/web3-context" },
+    { "path": "./packages/utils" }
+  ]
+}

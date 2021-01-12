@@ -16,15 +16,17 @@
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
-    "typescript": "^4.0.5"
+    "tsc-watch": "^4.2.9",
+    "typescript": "^4.0.5",
+    "yalc": "^1.0.0-pre.48"
   },
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b -w",
+    "watch:push": "tsc-watch -b --onCompilationComplete 'yarn yalc:push:all'",
     "lint": "eslint packages --ext .ts",
     "lint:fix": "eslint packages --ext .ts --fix",
-    "link:all": "lerna run link",
-    "unlink:all": "lerna run unlink",
+    "yalc:push:all": "lerna exec yalc push",
     "test": "lerna run test",
     "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
