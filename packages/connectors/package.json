@@ -39,6 +39,7 @@
     "semaphore-async-await": "^1.5.1",
     "trezor-connect": "^8.1.17-extended",
     "ts-essentials": "^7.0.1",
+    "web3": "^1.3.3",
     "web3-provider-engine": "^14.0.1"
   },
   "gitHead": "0423d3d02ebfc45bf73092227a118bf9409f4696"
