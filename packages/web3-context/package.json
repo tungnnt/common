@@ -30,7 +30,7 @@
     "@web3-react/types": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
-    "bignumber.js": "^7.2.1",
+    "bignumber.js": "^9.0.1",
     "ethereum-types": "^3.3.3",
     "lodash": "^4.17.10",
     "rxjs": "~6.2.2",

@@ -17,7 +17,7 @@
     "url": "https://github.com/OasisDEX/common/issues"
   },
   "dependencies": {
-    "bignumber.js": "^7.2.1"
+    "bignumber.js": "^9.0.1"
   },
   "gitHead": "0423d3d02ebfc45bf73092227a118bf9409f4696"
 }

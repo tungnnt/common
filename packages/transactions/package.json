@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@types/ramda": "^0.25.38",
-    "bignumber.js": "^7.2.1",
+    "bignumber.js": "^9.0.1",
     "lodash": "^4.17.20",
     "ramda": "^0.25.0",
     "rxjs": "~6.2.2",
