@@ -1,4 +1,3 @@
-import { AccountFetchingConfigs, LedgerEthereumClient } from '@0x/subproviders';
 import Eth from '@ledgerhq/hw-app-eth';
 // tslint:disable:no-implicit-dependencies
 import TransportU2F from '@ledgerhq/hw-transport-u2f';
@@ -8,6 +7,7 @@ import Web3ProviderEngine from 'web3-provider-engine';
 import CacheSubprovider from 'web3-provider-engine/subproviders/cache.js';
 
 import { LedgerSubprovider } from './ledgerSubprovider';
+import { AccountFetchingConfigs, LedgerEthereumClient } from '@0x/subproviders/lib/src/types';
 import { RPCSubprovider } from '@0x/subproviders/lib/src/subproviders/rpc_subprovider';
 
 interface LedgerConnectorArguments {

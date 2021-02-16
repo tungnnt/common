@@ -5,7 +5,7 @@ import {
   LedgerGetAddressResult,
   LedgerSubproviderConfigs,
   PartialTxParams,
-} from '@0x/subproviders';
+} from '@0x/subproviders/lib/src/types';
 import { addressUtils } from '@0x/utils';
 import { Transaction } from 'ethereumjs-tx';
 import { publicToAddress } from 'ethereumjs-util';
