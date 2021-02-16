@@ -21,7 +21,7 @@
     "tsc-watch": "^4.2.9"
   },
   "dependencies": {
-    "@oasisdex/connectors": "^0.0.19",
+    "@oasisdex/connectors": "^0.0.21",
     "@oasisdex/utils": "^0.0.8",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
