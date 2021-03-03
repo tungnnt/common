@@ -1,6 +1,5 @@
 import Eth from '@ledgerhq/hw-app-eth';
-// tslint:disable:no-implicit-dependencies
-import TransportU2F from '@ledgerhq/hw-transport-u2f';
+import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { ConnectorUpdate } from '@web3-react/types';
 import Web3ProviderEngine from 'web3-provider-engine';
@@ -20,7 +19,7 @@ interface LedgerConnectorArguments {
 }
 
 async function ledgerEthereumNodeJsClientFactoryAsync(): Promise<LedgerEthereumClient> {
-  const ledgerConnection = await TransportU2F.create();
+  const ledgerConnection = await TransportWebUSB.create();
   const ledgerEthClient = new Eth(ledgerConnection);
   return ledgerEthClient;
 }
@@ -62,6 +61,7 @@ export class LedgerConnector extends AbstractConnector {
           ledgerEthereumClientFactoryAsync: ledgerEthereumNodeJsClientFactoryAsync,
           accountFetchingConfigs: this.accountFetchingConfigs,
           baseDerivationPath: this.baseDerivationPath,
+          onDisconnect: this.emitDeactivate.bind(this),
         }),
       );
       engine.addProvider(new CacheSubprovider());

@@ -81,16 +81,6 @@ export function createWeb3Context$(
     }, [activatingConnector, connector]);
 
     useEffect(() => {
-      // TODO: Move this logic somewhere else to fix Wallet Link autoconnect
-      //   if (connector && (connector as WalletLinkConnector).walletLink) {
-      //     const con = connector as WalletLinkConnector;
-      //     con.walletLink._relay.connection.sessionConfig$
-      //       .pipe(filter((c: any) => !!c.metadata && c.metadata.__destroyed === '1'))
-      //       .subscribe(() => {
-      //         localStorage.removeItem(AUTO_CONNECT);
-      //       });
-      //   }
-
       if (activatingConnector) {
         push({
           status: 'connecting',

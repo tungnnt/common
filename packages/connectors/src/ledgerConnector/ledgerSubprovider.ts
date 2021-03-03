@@ -23,6 +23,8 @@ const DEFAULT_NUM_ADDRESSES_TO_FETCH = 5;
 
 const ledgerLiveRegex = /^(44'\/(?:1|60|61)'\/)(\d+)('?)$/;
 
+export type OnDisconnectCallback = () => void;
+
 export class LedgerSubprovider extends BaseWalletSubprovider {
   private readonly _connectionLock = new Lock();
   private readonly _networkId: number;
@@ -32,9 +34,11 @@ export class LedgerSubprovider extends BaseWalletSubprovider {
   private readonly _shouldAlwaysAskForConfirmation: boolean;
   private chosenAddress?: string;
   private addressToPathMap: Dictionary<string> = {};
+  private _onDisconnect: OnDisconnectCallback;
 
-  constructor(config: LedgerSubproviderConfigs) {
+  constructor(config: LedgerSubproviderConfigs & { onDisconnect: OnDisconnectCallback }) {
     super();
+    this._onDisconnect = config.onDisconnect;
     this._networkId = config.networkId;
     this._ledgerEthereumClientFactoryAsync = config.ledgerEthereumClientFactoryAsync;
     this._derivationPath = config.baseDerivationPath || DEFAULT_BASE_DERIVATION_PATH;
@@ -194,6 +198,8 @@ export class LedgerSubprovider extends BaseWalletSubprovider {
       throw new Error(LedgerSubproviderErrors.MultipleOpenConnectionsDisallowed);
     }
     const ledgerEthereumClient = await this._ledgerEthereumClientFactoryAsync();
+    // @ts-ignore
+    ledgerEthereumClient.transport.on('disconnect', this._onDisconnect?.bind(this));
     this._connectionLock.release();
     return ledgerEthereumClient;
   }
@@ -215,8 +221,8 @@ class AddressGenerator {
 
   constructor(data: LedgerGetAddressResult) {
     this.hdk = new HDKey();
-    this.hdk.publicKey = new Buffer(data.publicKey, 'hex');
-    this.hdk.chainCode = new Buffer(data.chainCode, 'hex');
+    this.hdk.publicKey = Buffer.from(data.publicKey, 'hex');
+    this.hdk.chainCode = Buffer.from(data.chainCode, 'hex');
   }
 
   getAddressString = (index: number) => {
