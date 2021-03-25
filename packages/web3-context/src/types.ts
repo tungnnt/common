@@ -6,6 +6,8 @@ export type ConnectionKind =
   | 'injected'
   | 'walletLink'
   | 'walletConnect'
+  | 'portis'
+  | 'myetherwallet'
   | 'trezor'
   | 'ledger'
   | 'network'
