@@ -31,7 +31,7 @@ export function call<D, R, CC extends ContextConnected>(
   { call, prepareArgs, postprocess }: CallDef<D, R, CC>,
 ): (args: D) => Observable<R> {
   return (args: D) => {
-    return from<R>(
+    return from<R[]>(
       call(
         args,
         context,
@@ -50,7 +50,7 @@ export function estimateGas<A extends TxMeta, CC extends ContextConnected>(
   { call, prepareArgs, options }: TransactionDef<A, CC>,
   args: A,
 ): Observable<number> {
-  const result = from<number>(
+  const result = from<number[]>(
     (call
       ? call(
           args,
