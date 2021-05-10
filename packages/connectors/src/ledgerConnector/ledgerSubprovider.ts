@@ -198,8 +198,8 @@ export class LedgerSubprovider extends BaseWalletSubprovider {
       throw new Error(LedgerSubproviderErrors.MultipleOpenConnectionsDisallowed);
     }
     const ledgerEthereumClient = await this._ledgerEthereumClientFactoryAsync();
-    // @ts-ignore
-    ledgerEthereumClient.transport.on('disconnect', this._onDisconnect?.bind(this));
+
+    (ledgerEthereumClient.transport as any).on('disconnect', this._onDisconnect?.bind(this));
     this._connectionLock.release();
     return ledgerEthereumClient;
   }
