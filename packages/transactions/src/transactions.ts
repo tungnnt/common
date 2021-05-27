@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
+import { memoize } from 'lodash';
 import { fromPairs } from 'ramda';
 import {
   bindNodeCallback,
@@ -10,10 +10,10 @@ import {
   merge,
   Observable,
   of,
+  OperatorFunction,
   Subject,
   timer,
 } from 'rxjs';
-import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 import { ajax } from 'rxjs/ajax';
 import {
   catchError,
@@ -25,9 +25,27 @@ import {
   shareReplay,
   startWith,
   switchMap,
+  takeUntil,
+  takeWhile,
   tap,
 } from 'rxjs/operators';
 import Web3 from 'web3';
+import { deserializeTransactions, serializeTransactions } from './serialization';
+import {
+  CommonContext,
+  CommonTxState,
+  TxMeta,
+  TransactionLike,
+  TransactionReceiptLike,
+  TxRebroadcastStatus,
+  TxState,
+  TxStatus,
+  GetTransactionReceipt,
+  GetTransaction,
+  TransactionsChange,
+  NewTransactionChange,
+  SendFunction,
+} from './types';
 
 export class UnreachableCaseError extends Error {
   constructor(val: never) {
@@ -35,87 +53,11 @@ export class UnreachableCaseError extends Error {
   }
 }
 
-interface CommonContext {
-  id: string;
-  etherscan: {
-    apiUrl: string;
-    apiKey: string;
-  };
-  safeConfirmations: number;
-  web3: Web3;
-}
-
-export type TxMeta = {
-  kind: any;
-  [key: string]: string | number | boolean | BigNumber | undefined;
-};
-
-export enum TxStatus {
-  WaitingForApproval = 'WaitingForApproval',
-  CancelledByTheUser = 'CancelledByTheUser',
-  Propagating = 'Propagating',
-  WaitingForConfirmation = 'WaitingForConfirmation',
-  Success = 'Success',
-  Error = 'Error',
-  Failure = 'Failure',
-}
-
-export enum TxRebroadcastStatus {
-  speedup = 'speedup',
-  cancel = 'cancel',
-}
-
-export type TxState<A extends TxMeta> = {
-  account: string;
-  txNo: number;
-  networkId: string;
-  meta: A;
-  start: Date;
-  end?: Date;
-  lastChange: Date;
-  dismissed: boolean;
-} & (
-  | {
-      status: TxStatus.WaitingForConfirmation | TxStatus.Propagating;
-      txHash: string;
-      broadcastedAt: Date;
-    }
-  | {
-      status: TxStatus.WaitingForApproval;
-    }
-  | {
-      status: TxStatus.CancelledByTheUser;
-      error: any;
-    }
-  | {
-      status: TxStatus.Success;
-      txHash: string;
-      blockNumber: number;
-      receipt: any;
-      confirmations: number;
-      safeConfirmations: number;
-      rebroadcast?: TxRebroadcastStatus;
-    }
-  | {
-      status: TxStatus.Failure;
-      txHash: string;
-      blockNumber: number;
-      receipt: any;
-    }
-  | {
-      status: TxStatus.Error;
-      txHash: string;
-      error: any;
-    }
-);
-
 let txCounter = 1;
 
 export function isDone<A extends TxMeta>(state: TxState<A>): boolean {
-  return (
-    [TxStatus.CancelledByTheUser, TxStatus.Error, TxStatus.Failure, TxStatus.Success].indexOf(
-      state.status,
-    ) >= 0
+  return [TxStatus.CancelledByTheUser, TxStatus.Error, TxStatus.Failure, TxStatus.Success].includes(
+    state.status,
   );
 }
 
@@ -139,31 +81,12 @@ export function getTxHash<A extends TxMeta>(state: TxState<A>): string | undefin
   return undefined;
 }
 
-type NodeCallback<I, R> = (i: I, callback: (err: any, r: R) => any) => any;
-
-interface TransactionReceiptLike {
-  transactionHash: string;
-  status: boolean;
-  blockNumber: number;
-}
-
-type GetTransactionReceipt = NodeCallback<string, TransactionReceiptLike>;
-
-interface TransactionLike {
-  hash: string;
-  nonce: number;
-  input: string;
-  blockHash: string;
-}
-
-type GetTransaction = NodeCallback<string, TransactionLike | null>;
-
-function externalNonce2tx(
+function createExternalNonce2tx(
   onEveryBlock$: Observable<number>,
   context$: Observable<CommonContext>,
   account: string,
 ): Observable<ExternalNonce2tx> {
-  return combineLatest(context$, onEveryBlock$.pipe(first()), onEveryBlock$).pipe(
+  return combineLatest([context$, onEveryBlock$.pipe(first()), onEveryBlock$]).pipe(
     switchMap(([context, firstBlock]) =>
       ajax({
         url:
@@ -196,14 +119,20 @@ function externalNonce2tx(
   );
 }
 
+const externalNonce2Tx = memoize(
+  createExternalNonce2tx,
+  (_onEveryBlock$: Observable<number>, _context$: Observable<CommonContext>, account: string) =>
+    account,
+);
+
 function txRebroadcastStatus(
   account: string,
   context$: Observable<CommonContext>,
   onEveryBlock$: Observable<number>,
   { hash, nonce, input }: TransactionLike,
-): Observable<[string, undefined | TxRebroadcastStatus]> {
-  const externalNonce2tx$ = externalNonce2tx(onEveryBlock$, context$, account);
-  return combineLatest(externalNonce2tx$, onEveryBlock$).pipe(
+): Observable<[string, TxRebroadcastStatus]> {
+  const externalNonce2tx$ = externalNonce2Tx(onEveryBlock$, context$, account);
+  return combineLatest([externalNonce2tx$, onEveryBlock$]).pipe(
     map(([externalNonce2tx]) => {
       if (externalNonce2tx[nonce] && externalNonce2tx[nonce].hash !== hash) {
         return [
@@ -213,7 +142,7 @@ function txRebroadcastStatus(
             : TxRebroadcastStatus.cancel,
         ];
       }
-      return [hash, undefined];
+      return [hash, TxRebroadcastStatus.lost];
     }),
   );
 }
@@ -223,7 +152,7 @@ function successOrFailure<A extends TxMeta>(
   context$: Observable<CommonContext>,
   txHash: string,
   receipt: TransactionReceiptLike,
-  common: TxState<A>,
+  common: CommonTxState<A>,
   rebroadcast?: TxRebroadcastStatus,
 ): Observable<TxState<A>> {
   const end = new Date();
@@ -241,7 +170,7 @@ function successOrFailure<A extends TxMeta>(
   }
 
   // TODO: error handling!
-  return combineLatest(context$, onEveryBlock$).pipe(
+  return combineLatest([context$, onEveryBlock$]).pipe(
     map(([context, blockNumber]) => {
       const x: TxState<A> = {
         ...common,
@@ -267,17 +196,53 @@ function monitorTransaction<A extends TxMeta>(
   web3: Web3,
   txHash: string,
   broadcastedAt: Date,
-  common: TxState<A>,
+  common: CommonTxState<A>,
 ): Observable<TxState<A>> {
-  return timer(0, 1000).pipe(
-    switchMap(() => bindNodeCallback(web3.eth.getTransaction as GetTransaction)(txHash)),
-    filter((transaction) => !!transaction),
+  const everySecondUpUntil30Min$ = timer(0, 1000).pipe(takeUntil(timer(30 * 60 * 1000)));
+  const getTransaction = bindNodeCallback(web3.eth.getTransaction as GetTransaction);
+  const getTransactionReceipt = bindNodeCallback(
+    web3.eth.getTransactionReceipt as GetTransactionReceipt,
+  );
+  const propagatingTxState: TxState<A> = {
+    ...common,
+    broadcastedAt,
+    txHash,
+    status: TxStatus.Propagating,
+  };
+  const waitingForConfirmationTxState: TxState<A> = {
+    ...common,
+    broadcastedAt,
+    txHash,
+    status: TxStatus.WaitingForConfirmation,
+  };
+  function errorTxState(error: Error): TxState<A> {
+    return {
+      ...common,
+      error,
+      txHash,
+      end: new Date(),
+      lastChange: new Date(),
+      status: TxStatus.Error,
+    };
+  }
+  function notEnoughConfirmations(state: TxState<A>) {
+    return (
+      !isDone(state) ||
+      (state.status === TxStatus.Success && state.confirmations < state.safeConfirmations)
+    );
+  }
+  const txState$ = everySecondUpUntil30Min$.pipe(
+    switchMap(() => getTransaction(txHash)),
+    filter((transaction) => transaction !== null) as OperatorFunction<
+      TransactionLike | null,
+      TransactionLike
+    >,
     first(),
     mergeMap((transaction: TransactionLike) =>
       txRebroadcastStatus(account, context$, onEveryBlock$, transaction).pipe(
         switchMap(
-          ([hash, rebroadcast]) =>
-            bindNodeCallback(web3.eth.getTransactionReceipt as GetTransactionReceipt)(hash).pipe(
+          ([hash, rebroadcast]: [string, TxRebroadcastStatus]) =>
+            getTransactionReceipt(hash).pipe(
               filter((receipt) => receipt && !!receipt.blockNumber),
               map((receipt) => [receipt, rebroadcast]),
             ) as Observable<[TransactionReceiptLike, TxRebroadcastStatus]>,
@@ -293,36 +258,14 @@ function monitorTransaction<A extends TxMeta>(
             rebroadcast,
           ),
         ),
-        takeWhileInclusive(
-          (state: TxState<A>) =>
-            !isDone(state) ||
-            (state.status === TxStatus.Success && state.confirmations < state.safeConfirmations),
-        ),
-        startWith({
-          ...common,
-          broadcastedAt,
-          txHash,
-          status: TxStatus.WaitingForConfirmation,
-        }),
-        catchError((error) =>
-          of({
-            ...common,
-            error,
-            txHash: transaction.hash,
-            end: new Date(),
-            lastChange: new Date(),
-            status: TxStatus.Error,
-          }),
-        ),
+        takeWhile(notEnoughConfirmations, true),
+        startWith(waitingForConfirmationTxState),
+        catchError((error) => of(errorTxState(error))),
       ),
     ),
-    startWith({
-      ...common,
-      broadcastedAt,
-      txHash,
-      status: TxStatus.Propagating,
-    }),
+    startWith(propagatingTxState),
   );
+  return txState$;
 }
 
 function send<A extends TxMeta>(
@@ -343,6 +286,19 @@ function send<A extends TxMeta>(
     lastChange: new Date(),
     dismissed: false,
   };
+  const waitingForApprovalTxState: TxState<A> = {
+    ...common,
+    status: TxStatus.WaitingForApproval,
+  };
+  function cancelledByTheUserTxState(error: Error): TxState<A> {
+    return {
+      ...common,
+      error,
+      end: new Date(),
+      lastChange: new Date(),
+      status: TxStatus.CancelledByTheUser,
+    };
+  }
 
   const promiEvent = method();
   const result: Observable<TxState<A>> = context$.pipe(
@@ -362,21 +318,12 @@ function send<A extends TxMeta>(
             common as TxState<A>,
           ),
         ),
-        startWith({
-          ...common,
-          status: TxStatus.WaitingForApproval,
-        }),
+        startWith(waitingForApprovalTxState),
         catchError((error) => {
           if ((error.message as string).indexOf('User denied transaction signature') === -1) {
             console.error(error);
           }
-          return of({
-            ...common,
-            error,
-            end: new Date(),
-            lastChange: new Date(),
-            status: TxStatus.CancelledByTheUser,
-          });
+          return of(cancelledByTheUserTxState(error));
         }),
       ),
     ),
@@ -389,26 +336,6 @@ function send<A extends TxMeta>(
 interface ExternalNonce2tx {
   [nonce: number]: { hash: string; callData: string };
 }
-
-interface NewTransactionChange<A extends TxMeta> {
-  kind: 'newTx';
-  state: TxState<A>;
-}
-
-interface CachedTransactionChange<A extends TxMeta> {
-  kind: 'cachedTx';
-  state: TxState<A>;
-}
-
-export interface DismissedChange {
-  kind: 'dismissed';
-  txNo: number;
-}
-
-type TransactionsChange<A extends TxMeta> =
-  | NewTransactionChange<A>
-  | DismissedChange
-  | CachedTransactionChange<A>;
 
 function createTransactions$<A extends TxMeta>(
   account$: Observable<string>,
@@ -450,11 +377,11 @@ function createTransactions$<A extends TxMeta>(
 
   const persistentTxs$ = persist(account$, onEveryBlock$, context$, txs$, change);
 
-  const accountTxs$: Observable<TxState<A>[]> = combineLatest(
+  const accountTxs$: Observable<TxState<A>[]> = combineLatest([
     persistentTxs$,
     account$,
     context$,
-  ).pipe(
+  ]).pipe(
     map(([txs, account, context]) =>
       txs.filter((t: TxState<A>) => t.account === account && t.networkId === context.id),
     ),
@@ -477,53 +404,10 @@ function sendCurried<A extends TxMeta>(
     send<A>(onEveryBlock$, context$, change, account, networkId, meta, method);
 }
 
-export type SendFunction<A extends TxMeta> = (
-  account: string,
-  networkId: string,
-  meta: A,
-  method: (...args: any[]) => any,
-) => Observable<TxState<A>>;
-
 function saveTransactions<A extends TxMeta>(transactions: TxState<A>[]) {
   if (transactions.length) {
-    localStorage.setItem(
-      'transactions',
-      JSON.stringify(
-        transactions.filter(
-          (tx) =>
-            tx.status !== TxStatus.CancelledByTheUser && tx.status !== TxStatus.WaitingForApproval,
-        ),
-      ),
-    );
+    localStorage.setItem('transactions', serializeTransactions(transactions));
   }
-}
-
-// By default - toJSON method returns a string and we override it with our implementation that
-// returns other type so we need to ignore the error
-// eslint-disable-next-line
-// @ts-ignore
-BigNumber.prototype.toJSON = function toJSON() {
-  return {
-    _type: 'BigNumber',
-    _data: Object.assign({}, this),
-  };
-};
-
-function conformTransactions<A extends TxMeta>(serializedTransactions: string): TxState<A>[] {
-  function reviveFromJSON(_key: string, value: any) {
-    let result = value;
-    const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
-    if (typeof value === 'object' && value !== null && value.hasOwnProperty('_type')) {
-      switch (value._type) {
-        case 'BigNumber':
-          result = Object.assign(new BigNumber(0), value._data);
-      }
-    }
-    if (reISO.exec(value)) result = new Date(value);
-    return result;
-  }
-
-  return JSON.parse(serializedTransactions, reviveFromJSON);
 }
 
 function persist<A extends TxMeta>(
@@ -543,7 +427,7 @@ function persist<A extends TxMeta>(
               return transactions$;
             }
 
-            const deserializedTransactions: TxState<A>[] = conformTransactions(
+            const deserializedTransactions: TxState<A>[] = deserializeTransactions(
               serializedTransactions,
             );
 

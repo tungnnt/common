@@ -10,5 +10,6 @@ export {
   estimateGas,
   call,
 } from './callHelpersContextParametrized';
-export type { TxState, TxMeta, SendFunction, TxRebroadcastStatus } from './transactions';
-export { TxStatus, createSend, isDone } from './transactions';
+export type { TxState, TxMeta, SendFunction, TxRebroadcastStatus } from './types';
+export { TxStatus } from './types';
+export { createSend, isDone } from './transactions';

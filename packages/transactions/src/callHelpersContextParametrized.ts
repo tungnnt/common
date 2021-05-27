@@ -3,7 +3,7 @@ import { combineLatest, from, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/internal/operators';
 import Web3 from 'web3';
 
-import { SendFunction, TxMeta, TxState } from './transactions';
+import { SendFunction, TxMeta, TxState } from './types';
 
 type GasPrice$ = Observable<BigNumber>;
 export const DEFAULT_GAS = 6000000;
