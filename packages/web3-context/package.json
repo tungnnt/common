@@ -33,7 +33,7 @@
     "bignumber.js": "^9.0.1",
     "ethereum-types": "^3.3.3",
     "lodash": "^4.17.10",
-    "rxjs": "^6.2.0",
+    "rxjs": "^7.1.0",
     "web3": "^1.3.3",
     "web3-eth": "1.2.6"
   },
