@@ -26,7 +26,6 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  takeWhile,
   tap,
 } from 'rxjs/operators';
 import Web3 from 'web3';
@@ -46,6 +45,7 @@ import {
   NewTransactionChange,
   SendFunction,
 } from './types';
+import { takeWhileInclusive } from 'rxjs-take-while-inclusive';
 
 export class UnreachableCaseError extends Error {
   constructor(val: never) {
@@ -231,6 +231,7 @@ function monitorTransaction<A extends TxMeta>(
       (state.status === TxStatus.Success && state.confirmations < state.safeConfirmations)
     );
   }
+
   const txState$ = everySecondUpUntil30Min$.pipe(
     switchMap(() => getTransaction(txHash)),
     filter((transaction) => transaction !== null) as OperatorFunction<
@@ -258,7 +259,7 @@ function monitorTransaction<A extends TxMeta>(
             rebroadcast,
           ),
         ),
-        takeWhile(notEnoughConfirmations, true),
+        takeWhileInclusive(notEnoughConfirmations),
         startWith(waitingForConfirmationTxState),
         catchError((error) => of(errorTxState(error))),
       ),
