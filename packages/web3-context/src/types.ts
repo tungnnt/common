@@ -11,6 +11,7 @@ export type ConnectionKind =
   | 'trezor'
   | 'ledger'
   | 'network'
+  | 'gnosisSafe'
   | 'magicLink';
 
 interface Connectable {
