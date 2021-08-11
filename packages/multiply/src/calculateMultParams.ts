@@ -3,13 +3,12 @@ import { DesiredCDPState, MarketParams, VaultInfo } from './internal/types';
 import { ensureBigNumber } from './internal/utils';
 import { calculateParamsIncreaseMP, calculateParamsDecreaseMP } from './internal/increaseDecreaseMP'
 
-const  getMultiplyParams = function(
-   
+function getMultiplyParams(
     marketParams: MarketParams,
     vaultInfo:VaultInfo,
     desiredCdp:DesiredCDPState,
-    skipFlashLoan: boolean = false,
-    debug : boolean = false,
+    skipFlashLoan = false,
+    debug = false,
   ): {
         debtDelta: BigNumber,
         collateralDelta: BigNumber,
@@ -29,7 +28,7 @@ const  getMultiplyParams = function(
                   marketParams.oraclePrice,
                   marketParams.marketPrice,
                   marketParams.OF,
-                  skipFlashLoan==false?marketParams.FF:new BigNumber(0),
+                  skipFlashLoan===false?marketParams.FF:new BigNumber(0),
                   vaultInfo.currentCollateral.minus(desiredCdp.withdrawColl),
                   vaultInfo.currentDebt.plus(desiredCdp.withdrawDai),
                   desiredCdp.requiredCollRatio,
@@ -47,7 +46,7 @@ const  getMultiplyParams = function(
                         marketParams.oraclePrice,
                         marketParams.marketPrice,
                         marketParams.OF,
-                        skipFlashLoan==false?marketParams.FF:new BigNumber(0),
+                        skipFlashLoan===false?marketParams.FF:new BigNumber(0),
                         vaultInfo.currentCollateral.plus(desiredCdp.providedCollateral),
                         vaultInfo.currentDebt.minus(desiredCdp.providedDai),
                         desiredCdp.requiredCollRatio,
@@ -56,7 +55,7 @@ const  getMultiplyParams = function(
                         debug
                   )
             }else{
-                  let currentCollRat = vaultInfo.currentCollateral.times(marketParams.oraclePrice).dividedBy(vaultInfo.currentDebt);
+                  const currentCollRat = vaultInfo.currentCollateral.times(marketParams.oraclePrice).dividedBy(vaultInfo.currentDebt);
                   if(currentCollRat.lt(desiredCdp.requiredCollRatio)){
                         console.log("currentCollRat.lt(desiredCdp.requiredCollRatio)");
                         //decrease mult
@@ -64,7 +63,7 @@ const  getMultiplyParams = function(
                               marketParams.oraclePrice,
                               marketParams.marketPrice,
                               marketParams.OF,
-                              skipFlashLoan==false?marketParams.FF:new BigNumber(0),
+                              skipFlashLoan===false?marketParams.FF:new BigNumber(0),
                               vaultInfo.currentCollateral.minus(desiredCdp.withdrawColl),
                               vaultInfo.currentDebt.plus(desiredCdp.withdrawDai),
                               desiredCdp.requiredCollRatio,
@@ -81,7 +80,7 @@ const  getMultiplyParams = function(
                               marketParams.oraclePrice,
                               marketParams.marketPrice,
                               marketParams.OF,
-                              skipFlashLoan==false?marketParams.FF:new BigNumber(0),
+                              skipFlashLoan===false?marketParams.FF:new BigNumber(0),
                               vaultInfo.currentCollateral.plus(desiredCdp.providedCollateral),
                               vaultInfo.currentDebt.minus(desiredCdp.providedDai),
                               desiredCdp.requiredCollRatio,
@@ -101,4 +100,4 @@ const  getMultiplyParams = function(
         }
   }
 
-export { getMultiplyParams,  DesiredCDPState, MarketParams, VaultInfo}
+export { getMultiplyParams,  DesiredCDPState, MarketParams, VaultInfo }

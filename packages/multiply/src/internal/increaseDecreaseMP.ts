@@ -2,7 +2,7 @@
 import { BigNumber } from 'bignumber.js';
 
 const one = new BigNumber(1);
-const calculateParamsIncreaseMP = function (
+function calculateParamsIncreaseMP (
     oraclePrice : BigNumber,
     marketPrice : BigNumber,
     OF : BigNumber,
@@ -13,7 +13,7 @@ const calculateParamsIncreaseMP = function (
     slippage : BigNumber,
     depositDai = new BigNumber(0),
     debug = false,
-  ) {
+  ): [BigNumber] {
     if (debug) {
       console.log('calculateParamsIncreaseMP.oraclePrice', oraclePrice.toFixed(2))
       console.log('calculateParamsIncreaseMP.marketPrice', marketPrice.toFixed(2))
@@ -35,8 +35,8 @@ const calculateParamsIncreaseMP = function (
           .minus(oraclePrice.times(one.minus(OF))),
       )
 
-    let ourFee = oraclePrice.times(depositDai).times(OF).plus(debt.times(one.plus(FF)).times(OF)); 
-    let flashLoanFee = debt.times(FF);
+    const ourFee = oraclePrice.times(depositDai).times(OF).plus(debt.times(one.plus(FF)).times(OF)); 
+    const flashLoanFee = debt.times(FF);
     const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
     if (debug) {
       console.log('Computed: calculateParamsIncreaseMP.debt', debt.toFixed(2))
@@ -45,8 +45,7 @@ const calculateParamsIncreaseMP = function (
     return [debt, collateral, ourFee, flashLoanFee]
   }
 
-
-  const calculateParamsDecreaseMP = function (
+  function calculateParamsDecreaseMP(
     oraclePrice : BigNumber,
     marketPrice : BigNumber,
     OF : BigNumber,
@@ -57,7 +56,7 @@ const calculateParamsIncreaseMP = function (
     slippage : BigNumber,
     depositDai = new BigNumber(0),
     debug = false,
-  ) {
+  ) : [BigNumber] {
     if (debug) {
       console.log('calculateParamsDecreaseMP.oraclePrice', oraclePrice.toFixed(2))
       console.log('calculateParamsDecreaseMP.marketPrice', marketPrice.toFixed(2))
@@ -79,8 +78,8 @@ const calculateParamsIncreaseMP = function (
           .minus(marketPriceSlippage.times(requiredCollRatio)),
       )
     const collateral = debt.times(one.plus(OF).plus(FF)).div(marketPriceSlippage)
-    let ourFee = oraclePrice.times(depositDai).times(OF).plus(debt.times(one.plus(FF)).times(OF)); 
-    let flashLoanFee = debt.times(FF);
+    const ourFee = oraclePrice.times(depositDai).times(OF).plus(debt.times(one.plus(FF)).times(OF)); 
+    const flashLoanFee = debt.times(FF);
     if (debug) {
       console.log('Computed: calculateParamsDecreaseMP.debt', debt.toFixed(4))
       console.log('Computed: calculateParamsDecreaseMP.collateral', collateral.toFixed(4))

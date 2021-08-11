@@ -1,9 +1,9 @@
-import {ConvertableToBigNumber} from './types';
+import { ConvertableToBigNumber } from './types';
 import { BigNumber } from 'bignumber.js';
 
-const ensureBigNumber = function(candidate : ConvertableToBigNumber) : BigNumber{
+function ensureBigNumber(candidate : ConvertableToBigNumber) : BigNumber{
     let retVal : BigNumber;
-    if (typeof candidate == 'number' || typeof candidate == 'string') {
+    if (typeof candidate === 'number' || typeof candidate === 'string') {
       retVal = new BigNumber(candidate);
     } else {
       if (BigNumber.isBigNumber(candidate) === false ) {
@@ -14,7 +14,7 @@ const ensureBigNumber = function(candidate : ConvertableToBigNumber) : BigNumber
     }
         
     if(retVal.isNaN()){
-      throw `Conversion for BigNumber failed`
+      throw new Error(`Conversion for BigNumber failed`)
     }
     return retVal;
 }
