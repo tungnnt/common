@@ -26,15 +26,43 @@ describe("getMultiplyParams no fees, slippage, zero price divergence/",async ()=
   })
   it("should return object", async ()=>{
     let val = getMultiplyParams(
-        new MarketParams(0,0,0,0,0),
-        new VaultInfo(0,0),
-        new DesiredCDPState(0,0,0,0,0)
+        new MarketParams(100,100,0,0,0),
+        new VaultInfo(100,100),
+        new DesiredCDPState(2,0,0,0,0)
     )
     expect(val).to.not.be.undefined;
   })
+  it("should console.log stuff if used in debug mode for increase",async ()=>{
+    let callCount : number = 0;
+    let backup = console.log;
+    console.log = (data)=>{
+      callCount = callCount+1;
+    };
+    let val = getMultiplyParams(
+        new MarketParams(100,100,0,0,0),
+        new VaultInfo(100,100),
+        new DesiredCDPState(2,0,0,0,0),true,true
+    )
+    console.log = backup;
+    expect(callCount).to.be.greaterThan(5);
+  });
+  it("should console.log stuff if used in debug mode for decrease",async ()=>{
+    let callCount : number = 0;
+    let backup = console.log;
+    console.log = (data)=>{
+      callCount = callCount+1;
+    };
+    let val = getMultiplyParams(
+        new MarketParams(200,200,0,0,0),
+        new VaultInfo(10000,100),
+        new DesiredCDPState(7,0,0,0,0),true,true
+    )
+    console.log = backup;
+    expect(callCount).to.be.greaterThan(5);
+  });
   describe(`multiply increase inital debt=10000 collRatio 3`, async () => {
     it("should draw additional 10000 debt when changing collateralisation ratio from 3 to 2",async ()=>{
-      let desiredCdpState = new DesiredCDPState(2,0,0,0,0);
+      let desiredCdpState = new DesiredCDPState(new BigNumber(2),0,0,0,0);
       let retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
       let finalDebt = retVal.debtDelta.plus(vaultInfo.currentDebt);
       let finalCollVal = retVal.collateralDelta.plus(vaultInfo.currentCollateral).times(marketParams.oraclePrice);
@@ -49,6 +77,7 @@ describe("getMultiplyParams no fees, slippage, zero price divergence/",async ()=
       let retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
       let finalDebt = retVal.debtDelta.plus(vaultInfo.currentDebt);
       let finalCollVal = retVal.collateralDelta.plus(vaultInfo.currentCollateral).times(marketParams.oraclePrice);
+      console.log("Calculated finals",finalDebt.toString(),finalCollVal.toString());
       expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThan(1.9999);
       expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(2.0001);
     })
@@ -66,6 +95,12 @@ describe("getMultiplyParams no fees, slippage, zero price divergence/",async ()=
       let retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
       let finalDebtVal = (vaultInfo.currentDebt).plus(retVal.debtDelta);
       expect(finalDebtVal.toNumber()).to.be.equal(2500);
+    })
+    it("should have debt delta equal 5000 DAI when changing collateralisation ratio to 5", async ()=>{
+      let desiredCdpState = new DesiredCDPState(5,0,0,0,0);
+      let retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
+      let finalDebtVal = (vaultInfo.currentDebt).plus(retVal.debtDelta);
+      expect(finalDebtVal.toNumber()).to.be.equal(5000);
     })
   });
 });

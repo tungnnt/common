@@ -9,7 +9,11 @@ class MarketParams {
     public FF: BigNumber;
     public OF: BigNumber;
     public slippage: BigNumber;
-    constructor(_oracleP:ConvertableToBigNumber, _marketP : ConvertableToBigNumber, _FF: ConvertableToBigNumber, _OF : ConvertableToBigNumber, _slip:ConvertableToBigNumber){
+    constructor(_oracleP:ConvertableToBigNumber, 
+      _marketP : ConvertableToBigNumber, 
+      _FF: ConvertableToBigNumber, 
+      _OF : ConvertableToBigNumber, 
+      _slip:ConvertableToBigNumber){
           this.oraclePrice = ensureBigNumber(_oracleP);
           this.marketPrice = ensureBigNumber(_marketP);
           this.FF = ensureBigNumber(_FF);
@@ -20,9 +24,10 @@ class MarketParams {
 class VaultInfo {
      public currentDebt: BigNumber;
      public currentCollateral: BigNumber;
-     constructor(_debt:ConvertableToBigNumber, _coll:ConvertableToBigNumber){
-           this.currentDebt = ensureBigNumber(_debt);
-           this.currentCollateral = ensureBigNumber(_coll);
+     constructor(_debt:ConvertableToBigNumber, 
+      _coll:ConvertableToBigNumber){
+        this.currentDebt = ensureBigNumber(_debt);
+        this.currentCollateral = ensureBigNumber(_coll);
      }
 }
 class DesiredCDPState {

@@ -82,8 +82,8 @@ const calculateParamsIncreaseMP = function (
     let ourFee = oraclePrice.times(depositDai).times(OF).plus(debt.times(one.plus(FF)).times(OF)); 
     let flashLoanFee = debt.times(FF);
     if (debug) {
-      console.log('Computed: calculateParamsDecreaseMP.debt', debt.toFixed(2))
-      console.log('Computed: calculateParamsDecreaseMP.collateral', collateral.toFixed(2))
+      console.log('Computed: calculateParamsDecreaseMP.debt', debt.toFixed(4))
+      console.log('Computed: calculateParamsDecreaseMP.collateral', collateral.toFixed(4))
     }
     return [debt, collateral, ourFee, flashLoanFee]
   }
