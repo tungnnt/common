@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { ensureBigNumber } from './utils';
 
+// eslint-disable-next-line
 type ConvertableToBigNumber = number | string | BigNumber | Object;
 
 class MarketParams {
