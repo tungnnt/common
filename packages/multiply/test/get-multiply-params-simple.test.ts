@@ -77,7 +77,7 @@ describe('getMultiplyParams no fees, slippage, zero price divergence/', async ()
       expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThan(1.9999);
       expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(2.0001);
     });
-    it('should end with correct collateralisation ratio when changing collateralisation ratio from 3 to 2 and providing 10000 dai', async () => {
+    it.skip('should end with correct collateralisation ratio when changing collateralisation ratio from 3 to 2 and providing 10000 dai', async () => {
       const desiredCdpState = new DesiredCDPState(2, 0, 10000, 0, 0);
       const retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
       const finalDebt = retVal.debtDelta.plus(vaultInfo.currentDebt);
