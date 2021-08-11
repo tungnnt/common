@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { ensureBigNumber } from './utils';
 
-type ConvertableToBigNumber = number | string | BigNumber | unknown;
+type ConvertableToBigNumber = number | string | BigNumber | Object;
 
 class MarketParams {
   public oraclePrice: BigNumber;

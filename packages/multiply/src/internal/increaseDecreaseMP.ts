@@ -12,7 +12,7 @@ function calculateParamsIncreaseMP(
   slippage: BigNumber,
   depositDai = new BigNumber(0),
   debug = false,
-): [BigNumber] {
+): Array<BigNumber> {
   if (debug) {
     console.log('calculateParamsIncreaseMP.oraclePrice', oraclePrice.toFixed(2));
     console.log('calculateParamsIncreaseMP.marketPrice', marketPrice.toFixed(2));
@@ -58,7 +58,7 @@ function calculateParamsDecreaseMP(
   slippage: BigNumber,
   depositDai = new BigNumber(0),
   debug = false,
-): [BigNumber] {
+): Array<BigNumber> {
   if (debug) {
     console.log('calculateParamsDecreaseMP.oraclePrice', oraclePrice.toFixed(2));
     console.log('calculateParamsDecreaseMP.marketPrice', marketPrice.toFixed(2));
