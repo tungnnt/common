@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig-base",
+    "compilerOptions": {
+        "outDir": "lib",
+        "rootDir": ".",
+        "experimentalDecorators": true,
+        "types": ["mocha", "node"],
+        "typeRoots" : [
+          "../node_modules/@types"
+        ]
+    },
+    "include": ["./src/**/*","./test/**/*"],
+    "exclude": [
+      "../node_modules"
+    ]
+}
