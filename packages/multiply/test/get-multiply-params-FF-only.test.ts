@@ -10,7 +10,13 @@ describe('getMultiplyParams no oazo fee, slippage, zero price divergence, FF app
   let vaultInfo: VaultInfo;
 
   before(async () => {
-    marketParams = new MarketParams(3000, 3000, 0.5, 0.0, 0);
+    marketParams = new MarketParams( {
+      marketPrice:3000,
+      oraclePrice:3000,
+      FF:0.5,
+      OF:0,
+      slippage:0
+    });
     vaultInfo = new VaultInfo(10000, 10);
   });
 

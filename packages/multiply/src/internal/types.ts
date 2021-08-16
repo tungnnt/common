@@ -4,24 +4,26 @@ import { ensureBigNumber } from './utils';
 // eslint-disable-next-line
 type ConvertableToBigNumber = number | string | BigNumber | Object;
 
+type ParamsConstr = {
+  oraclePrice: ConvertableToBigNumber,
+  marketPrice: ConvertableToBigNumber,
+  FF: ConvertableToBigNumber,
+  OF: ConvertableToBigNumber,
+  slippage: ConvertableToBigNumber,
+}
+
 class MarketParams {
   public oraclePrice: BigNumber;
   public marketPrice: BigNumber;
   public FF: BigNumber;
   public OF: BigNumber;
   public slippage: BigNumber;
-  constructor(
-    _oracleP: ConvertableToBigNumber,
-    _marketP: ConvertableToBigNumber,
-    _FF: ConvertableToBigNumber,
-    _OF: ConvertableToBigNumber,
-    _slip: ConvertableToBigNumber,
-  ) {
-    this.oraclePrice = ensureBigNumber(_oracleP);
-    this.marketPrice = ensureBigNumber(_marketP);
-    this.FF = ensureBigNumber(_FF);
-    this.OF = ensureBigNumber(_OF);
-    this.slippage = ensureBigNumber(_slip);
+  constructor(constr : ParamsConstr) {
+    this.oraclePrice = ensureBigNumber(constr.oraclePrice);
+    this.marketPrice = ensureBigNumber(constr.marketPrice);
+    this.FF = ensureBigNumber(constr.FF);
+    this.OF = ensureBigNumber(constr.OF);
+    this.slippage = ensureBigNumber(constr.slippage);
   }
 }
 class VaultInfo {

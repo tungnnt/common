@@ -24,7 +24,6 @@ function getMultiplyParams(
   let oazoFee = new BigNumber(0);
 
   if (desiredCdp.withdrawColl.gt(0) || desiredCdp.withdrawDai.gt(0)) {
-    console.log('desiredCdp.withdrawColl.gt(0)');
     //decrease multiply
     [debtDelta, collateralDelta, oazoFee, loanFee] = calculateParamsDecreaseMP(
       marketParams.oraclePrice,
@@ -45,7 +44,6 @@ function getMultiplyParams(
     collateralDelta = collateralDelta.times(-1);
   } else {
     if (desiredCdp.providedDai.gt(0) || desiredCdp.providedCollateral.gt(0)) {
-      console.log('desiredCdp.providedDai.gt(0)');
       //increase multiply
       [debtDelta, collateralDelta, oazoFee, loanFee] = calculateParamsIncreaseMP(
         marketParams.oraclePrice,
@@ -67,7 +65,6 @@ function getMultiplyParams(
         .times(marketParams.oraclePrice)
         .dividedBy(vaultInfo.currentDebt);
       if (currentCollRat.lt(desiredCdp.requiredCollRatio)) {
-        console.log('currentCollRat.lt(desiredCdp.requiredCollRatio)');
         //decrease mult
         [debtDelta, collateralDelta, oazoFee, loanFee] = calculateParamsDecreaseMP(
           marketParams.oraclePrice,
@@ -87,10 +84,6 @@ function getMultiplyParams(
         debtDelta = debtDelta.times(-1);
         collateralDelta = collateralDelta.times(-1);
       } else {
-        console.log(
-          'currentCollRat.lt(desiredCdp.requiredCollRatio) == false',
-          marketParams.FF.toFixed(3),
-        );
         //increase mult
         [debtDelta, collateralDelta, oazoFee, loanFee] = calculateParamsIncreaseMP(
           marketParams.oraclePrice,
