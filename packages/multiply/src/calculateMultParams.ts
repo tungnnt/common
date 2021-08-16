@@ -37,8 +37,12 @@ function getMultiplyParams(
       desiredCdp.providedDai,
       debug,
     );
-    if(debtDelta.lt(0) || collateralDelta.lt(0)){
-      throw new Error(`calculateParamsDecreaseMP invalid values debt=${debtDelta.toFixed(4)} coll=${collateralDelta.toFixed(0)}`);
+    if (debtDelta.lt(0) || collateralDelta.lt(0)) {
+      throw new Error(
+        `calculateParamsDecreaseMP invalid values debt=${debtDelta.toFixed(
+          4,
+        )} coll=${collateralDelta.toFixed(0)}`,
+      );
     }
     debtDelta = debtDelta.times(-1);
     collateralDelta = collateralDelta.times(-1);
@@ -57,8 +61,12 @@ function getMultiplyParams(
         desiredCdp.providedDai,
         debug,
       );
-      if(debtDelta.lt(0) || collateralDelta.lt(0)){
-        throw new Error(`calculateParamsIncreaseMP invalid values debt=${debtDelta.toFixed(4)} coll=${collateralDelta.toFixed(0)}`);
+      if (debtDelta.lt(0) || collateralDelta.lt(0)) {
+        throw new Error(
+          `calculateParamsIncreaseMP invalid values debt=${debtDelta.toFixed(
+            4,
+          )} coll=${collateralDelta.toFixed(0)}`,
+        );
       }
     } else {
       const currentCollRat = vaultInfo.currentCollateral
@@ -78,8 +86,12 @@ function getMultiplyParams(
           desiredCdp.providedDai,
           debug,
         );
-        if(debtDelta.lt(0) || collateralDelta.lt(0)){
-          throw new Error(`calculateParamsDecreaseMP invalid values debt=${debtDelta.toFixed(4)} coll=${collateralDelta.toFixed(0)}`);
+        if (debtDelta.lt(0) || collateralDelta.lt(0)) {
+          throw new Error(
+            `calculateParamsDecreaseMP invalid values debt=${debtDelta.toFixed(
+              4,
+            )} coll=${collateralDelta.toFixed(0)}`,
+          );
         }
         debtDelta = debtDelta.times(-1);
         collateralDelta = collateralDelta.times(-1);
@@ -97,8 +109,12 @@ function getMultiplyParams(
           desiredCdp.providedDai,
           debug,
         );
-        if(debtDelta.lt(0) || collateralDelta.lt(0)){
-          throw new Error(`calculateParamsIncreaseMP invalid values debt=${debtDelta.toFixed(4)} coll=${collateralDelta.toFixed(0)}`);
+        if (debtDelta.lt(0) || collateralDelta.lt(0)) {
+          throw new Error(
+            `calculateParamsIncreaseMP invalid values debt=${debtDelta.toFixed(
+              4,
+            )} coll=${collateralDelta.toFixed(0)}`,
+          );
         }
       }
     }

@@ -5,12 +5,12 @@ import { ensureBigNumber } from './utils';
 type ConvertableToBigNumber = number | string | BigNumber | Object;
 
 type ParamsConstr = {
-  oraclePrice: ConvertableToBigNumber,
-  marketPrice: ConvertableToBigNumber,
-  FF: ConvertableToBigNumber,
-  OF: ConvertableToBigNumber,
-  slippage: ConvertableToBigNumber,
-}
+  oraclePrice: ConvertableToBigNumber;
+  marketPrice: ConvertableToBigNumber;
+  FF: ConvertableToBigNumber;
+  OF: ConvertableToBigNumber;
+  slippage: ConvertableToBigNumber;
+};
 
 class MarketParams {
   public oraclePrice: BigNumber;
@@ -18,7 +18,7 @@ class MarketParams {
   public FF: BigNumber;
   public OF: BigNumber;
   public slippage: BigNumber;
-  constructor(constr : ParamsConstr) {
+  constructor(constr: ParamsConstr) {
     this.oraclePrice = ensureBigNumber(constr.oraclePrice);
     this.marketPrice = ensureBigNumber(constr.marketPrice);
     this.FF = ensureBigNumber(constr.FF);
