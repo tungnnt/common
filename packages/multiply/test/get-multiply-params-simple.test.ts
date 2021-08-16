@@ -11,7 +11,13 @@ describe('getMultiplyParams no fees, slippage, zero price divergence/', async ()
   let vaultInfo: VaultInfo;
 
   before(async () => {
-    marketParams = new MarketParams(3000, 3000, 0, 0.0, 0);
+    marketParams = new MarketParams({
+      marketPrice: 3000,
+      oraclePrice: 3000,
+      FF: 0,
+      OF: 0,
+      slippage: 0,
+    });
     vaultInfo = new VaultInfo(10000, 10);
   });
 
@@ -21,7 +27,13 @@ describe('getMultiplyParams no fees, slippage, zero price divergence/', async ()
 
   it('should return object', async () => {
     const val = getMultiplyParams(
-      new MarketParams(100, 100, 0, 0, 0),
+      new MarketParams({
+        marketPrice: 100,
+        oraclePrice: 100,
+        FF: 0,
+        OF: 0,
+        slippage: 0,
+      }),
       new VaultInfo(100, 100),
       new DesiredCDPState(2, 0, 0, 0, 0),
     );
@@ -35,7 +47,13 @@ describe('getMultiplyParams no fees, slippage, zero price divergence/', async ()
       callCount = callCount + 1;
     };
     const val = getMultiplyParams(
-      new MarketParams(100, 100, 0, 0, 0),
+      new MarketParams({
+        marketPrice: 100,
+        oraclePrice: 100,
+        FF: 0,
+        OF: 0,
+        slippage: 0,
+      }),
       new VaultInfo(100, 100),
       new DesiredCDPState(2, 0, 0, 0, 0),
       true,
@@ -53,7 +71,13 @@ describe('getMultiplyParams no fees, slippage, zero price divergence/', async ()
       callCount = callCount + 1;
     };
     const val = getMultiplyParams(
-      new MarketParams(200, 200, 0, 0, 0),
+      new MarketParams({
+        marketPrice: 200,
+        oraclePrice: 200,
+        FF: 0,
+        OF: 0,
+        slippage: 0,
+      }),
       new VaultInfo(10000, 100),
       new DesiredCDPState(7, 0, 0, 0, 0),
       true,
