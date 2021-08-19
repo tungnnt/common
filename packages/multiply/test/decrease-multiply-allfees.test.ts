@@ -10,7 +10,6 @@ describe('getMultiplyParams all fees', async () => {
   let marketParams: MarketParams;
   let vaultInfo: VaultInfo;
 
-
   before(async () => {
     marketParams = new MarketParams({
       marketPrice: 3000,
@@ -22,9 +21,9 @@ describe('getMultiplyParams all fees', async () => {
     vaultInfo = new VaultInfo(100000, 100);
   });
   describe(`multiply increase inital debt=10000 collRatio 3`, async () => {
-    let expectedCollDelta = 31.3731505253029000;
-    let expectedDebtDelta = 96981.8278543276000000;
-    let desiredCollRatio = 2;
+    const expectedCollDelta = 31.3731505253029000;
+    const expectedDebtDelta = 96981.8278543276000000;
+    const desiredCollRatio = 2;
     it(`should draw additional ${expectedDebtDelta} DAI debt when changing collateralisation ratio from 3 to ${desiredCollRatio}`, async () => {
       const desiredCdpState = new DesiredCDPState(new BigNumber(desiredCollRatio), 0, 0, 0, 0);
       const retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
