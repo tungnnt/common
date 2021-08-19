@@ -21,16 +21,16 @@ describe('getMultiplyParams all fees', async () => {
     vaultInfo = new VaultInfo(100000, 100);
   });
   describe(`multiply increase inital debt=10000 collRatio 3`, async () => {
-    const expectedCollDelta = 31.3731505253029000;
-    const expectedDebtDelta = 96981.8278543276000000;
+    const expectedCollDelta = 31.3731505253029;
+    const expectedDebtDelta = 96981.8278543276;
     const desiredCollRatio = 2;
     it(`should draw additional ${expectedDebtDelta} DAI debt when changing collateralisation ratio from 3 to ${desiredCollRatio}`, async () => {
       const desiredCdpState = new DesiredCDPState(new BigNumber(desiredCollRatio), 0, 0, 0, 0);
       const retVal = getMultiplyParams(marketParams, vaultInfo, desiredCdpState, false);
-      expect(retVal.debtDelta.toNumber()).to.be.greaterThan(expectedDebtDelta*0.9999);
-      expect(retVal.debtDelta.toNumber()).to.be.lessThan(expectedDebtDelta*1.0001);
-      expect(retVal.collateralDelta.toNumber()).to.be.greaterThan(expectedCollDelta*0.9999);
-      expect(retVal.collateralDelta.toNumber()).to.be.lessThan(expectedCollDelta*1.0001);
+      expect(retVal.debtDelta.toNumber()).to.be.greaterThan(expectedDebtDelta * 0.9999);
+      expect(retVal.debtDelta.toNumber()).to.be.lessThan(expectedDebtDelta * 1.0001);
+      expect(retVal.collateralDelta.toNumber()).to.be.greaterThan(expectedCollDelta * 0.9999);
+      expect(retVal.collateralDelta.toNumber()).to.be.lessThan(expectedCollDelta * 1.0001);
     });
     it(`should end with correct collateralisation ratio when changing collateralisation ratio from 3 to ${desiredCollRatio}`, async () => {
       const desiredCdpState = new DesiredCDPState(new BigNumber(desiredCollRatio), 0, 0, 0, 0);
@@ -39,8 +39,12 @@ describe('getMultiplyParams all fees', async () => {
       const finalCollVal = retVal.collateralDelta
         .plus(vaultInfo.currentCollateral)
         .times(marketParams.oraclePrice);
-      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThan(desiredCollRatio*0.9999);
-      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(desiredCollRatio*1.0001);
+      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThan(
+        desiredCollRatio * 0.9999,
+      );
+      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(
+        desiredCollRatio * 1.0001,
+      );
     });
   });
 });
