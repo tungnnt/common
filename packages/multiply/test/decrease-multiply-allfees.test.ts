@@ -42,9 +42,7 @@ describe('getMultiplyParams all fees', async () => {
       expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThanOrEqual(
         desiredCollRatio,
       );
-      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(
-        desiredCollRatio * 1.001,
-      );
+      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(desiredCollRatio * 1.001);
     });
   });
 });
