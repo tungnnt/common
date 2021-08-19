@@ -39,11 +39,11 @@ describe('getMultiplyParams all fees', async () => {
       const finalCollVal = retVal.collateralDelta
         .plus(vaultInfo.currentCollateral)
         .times(marketParams.oraclePrice);
-      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThan(
-        desiredCollRatio * 0.9999,
+      expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.greaterThanOrEqual(
+        desiredCollRatio,
       );
       expect(finalCollVal.dividedBy(finalDebt).toNumber()).to.be.lessThan(
-        desiredCollRatio * 1.0001,
+        desiredCollRatio * 1.001,
       );
     });
   });
