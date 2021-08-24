@@ -5,6 +5,7 @@ export const networkNameToId = {
   main: 1,
   kovan: 42,
   hardhat: 2137,
+  polka: 1287
 } as { [key: string]: number };
 
 export interface ContractDesc {
